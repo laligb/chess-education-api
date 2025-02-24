@@ -1,13 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose from 'mongoose';
 
-export type UserDocument = HydratedDocument<User> & {
-  validatePassword(password: string): Promise<boolean>;
-};
+// export type UserDocument = HydratedDocument<User> & {
+//   validatePassword(password: string): Promise<boolean>;
+// };
 
 @Schema()
 export class User {
-  @Prop()
+  @Prop({
+    unique: true,
+    default: () => new mongoose.Types.ObjectId().toString(),
+  })
+  customId: string;
+
+  @Prop({ required: true })
   name: string;
 
   @Prop({ required: true, enum: ['admin', 'professor', 'student'] })

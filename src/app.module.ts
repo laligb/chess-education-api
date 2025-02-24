@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GroupsModule } from './groups/groups.module';
 import { GameModule } from './game/game.module';
+import { TournamentModule } from './tournament/tournament.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { GameModule } from './game/game.module';
     UserModule,
     GroupsModule,
     GameModule,
+    TournamentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

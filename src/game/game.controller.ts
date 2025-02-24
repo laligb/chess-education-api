@@ -3,7 +3,7 @@ import { GameService } from './game.service';
 import { CreateGameDto } from './game.dto';
 import { Game } from './game.schema';
 
-@Controller('game')
+@Controller('games')
 export class GameController {
   constructor(private readonly gameService: GameService) {}
 
