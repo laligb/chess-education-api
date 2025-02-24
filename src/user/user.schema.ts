@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User> & {
   validatePassword(password: string): Promise<boolean>;
@@ -9,6 +9,15 @@ export type UserDocument = HydratedDocument<User> & {
 export class User {
   @Prop()
   name: string;
+
+  @Prop({ required: true, enum: ['admin', 'professor', 'student'] })
+  role: string;
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }],
+    default: [],
+  })
+  groups: string[];
 
   @Prop({ required: true, unique: true })
   email: string;
