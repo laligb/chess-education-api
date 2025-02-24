@@ -1,5 +1,5 @@
 import {
-  IsDate,
+  IsDateString,
   IsMongoId,
   IsNotEmpty,
   IsString,
@@ -13,7 +13,7 @@ export class CreateTournamentDto {
   @IsNotEmpty()
   title: string;
 
-  @IsDate()
+  @IsDateString()
   @IsNotEmpty()
   date: Date;
 

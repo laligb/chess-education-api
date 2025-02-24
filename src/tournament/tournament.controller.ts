@@ -3,7 +3,7 @@ import { TournamentService } from './tournament.service';
 import { CreateTournamentDto } from './tournament.dto';
 import { Tournament } from './tournament.schema';
 
-@Controller('tournament')
+@Controller('tournaments')
 export class TournamentController {
   constructor(private readonly tournamentService: TournamentService) {}
 

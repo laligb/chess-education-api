@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { User } from 'src/user/user.schema';
+import { Location, LocationSchema } from './location.schema';
 
 @Schema()
 export class Tournament extends Document {
@@ -10,12 +11,8 @@ export class Tournament extends Document {
   @Prop({ required: true })
   date: Date;
 
-  @Prop({ required: true })
-  location: {
-    name: string;
-    latitude: number;
-    longitude: number;
-  };
+  @Prop({ type: LocationSchema, required: true })
+  location: Location;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
