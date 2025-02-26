@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { Tournament } from 'src/tournament/tournament.schema';
 import { User } from 'src/user/user.schema';
 
 @Schema()
@@ -22,6 +23,13 @@ export class Game extends Document {
     default: '',
   })
   result: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tournament',
+    default: null,
+  })
+  tournamentId: Tournament | null;
 }
 
 export const GameSchema = SchemaFactory.createForClass(Game);
