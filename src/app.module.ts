@@ -7,9 +7,12 @@ import { GroupsModule } from './groups/groups.module';
 import { GameModule } from './game/game.module';
 import { TournamentModule } from './tournament/tournament.module';
 
+const mongoUri =
+  process.env.MONGO_URI || 'mongodb://localhost:27017/nestjs-test';
+
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/nestjs-test'),
+    MongooseModule.forRoot(mongoUri),
     UserModule,
     GroupsModule,
     GameModule,
