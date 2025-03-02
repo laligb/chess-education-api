@@ -7,28 +7,28 @@ import { Round } from './round.schema';
 @Schema()
 export class Tournament extends Document {
   @Prop({ required: true })
-  title: string;
+  title?: string;
 
   @Prop({ required: true })
-  date: Date;
+  date?: Date;
 
   @Prop({ type: LocationSchema, required: true })
-  location: Location;
+  location?: Location;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     default: [],
   })
-  players: User[];
+  players?: User[];
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
     default: [],
   })
-  games: [];
+  games?: [];
 
   @Prop({ type: [{ type: Round }], default: [] })
-  rounds: Round[];
+  rounds: Round[] = [];
 }
 
 export const TournamentSchema = SchemaFactory.createForClass(Tournament);

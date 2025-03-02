@@ -4,13 +4,13 @@ import { Game } from 'src/game/game.schema';
 
 export class Round {
   @Prop({ required: true })
-  roundNumber: number;
+  roundNumber?: number;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
     default: [],
   })
-  games: Game[];
+  games?: Game[];
 }
 
 export const RoundSchema = SchemaFactory.createForClass(Round);

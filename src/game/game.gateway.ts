@@ -16,11 +16,6 @@ interface InvitePayload {
   to: string;
 }
 
-interface MovePayload {
-  gameId: string;
-  move: string;
-}
-
 @WebSocketGateway({
   cors: { origin: ['http://localhost:3001', 'https://chessnext.vercel.app'] },
 })
@@ -28,11 +23,12 @@ export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
 
   constructor(private readonly gameService: GameService) {}
 
   afterInit(server: Server) {
+    this.server = server;
     console.log('✅ Chess WebSocket Server Initialized');
   }
 
@@ -50,7 +46,12 @@ export class GameGateway
     @MessageBody() payload: InvitePayload,
   ) {
     console.log(`📨 Invite from ${payload.from} to ${payload.to}`);
-    this.server.to(payload.to).emit('receiveInvite', { from: payload.from });
+
+    if (this.server) {
+      this.server.to(payload.to).emit('receiveInvite', { from: payload.from });
+    } else {
+      console.error('❌ WebSocket server is not initialized');
+    }
   }
 
   @SubscribeMessage('acceptInvite')
@@ -62,13 +63,18 @@ export class GameGateway
 
     const game = await this.gameService.createGame(payload.from, payload.to);
 
+    if (!game || !game.id || !this.server) {
+      console.error('❌ Failed to create game');
+      return;
+    }
+
     client.join(game.id);
     this.server
       .to(payload.from)
-      .emit('startGame', { gameId: game.id, opponent: payload.to });
+      .emit('startGame', { gameId: String(game.id), opponent: payload.to });
     this.server
       .to(payload.to)
-      .emit('startGame', { gameId: game.id, opponent: payload.from });
+      .emit('startGame', { gameId: String(game.id), opponent: payload.from });
 
     console.log(
       `✅ Players ${payload.from} and ${payload.to} joined room ${game.id}`,
@@ -78,20 +84,20 @@ export class GameGateway
   @SubscribeMessage('sendMove')
   async handleMove(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: MovePayload,
+    @MessageBody() payload: { gameId: string; move: string },
   ) {
     console.log(`♟️ Move in game ${payload.gameId}: ${payload.move}`);
 
-    const game = await this.gameService.addMove(payload.gameId, payload.move); // ✅ Use GameService
+    const game = await this.gameService.addMove(payload.gameId, payload.move);
 
-    if (!game) {
-      console.error('❌ Game not found!');
+    if (!game || !this.server) {
+      console.error('❌ Invalid game or WebSocket server');
       return;
     }
 
     console.log(`📜 Updated PGN: ${game.pgn}`);
     this.server
       .to(payload.gameId)
-      .emit('receiveMove', { gameId: game.id, pgn: game.pgn });
+      .emit('receiveMove', { gameId: String(game.id), pgn: game.pgn });
   }
 }

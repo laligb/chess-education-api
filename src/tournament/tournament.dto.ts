@@ -11,19 +11,19 @@ import { Type } from 'class-transformer';
 export class CreateTournamentDto {
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title?: string;
 
   @IsDateString()
   @IsNotEmpty()
-  date: Date;
+  date?: Date;
 
   @ValidateNested()
   @Type(() => LocationDto)
-  location: LocationDto;
+  location?: LocationDto;
 
   @IsMongoId()
-  player: string;
+  player?: string;
 
   @IsMongoId()
-  game: string;
+  game?: string;
 }

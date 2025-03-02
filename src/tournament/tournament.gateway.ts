@@ -10,9 +10,13 @@ import { TournamentService } from './tournament.service';
 @WebSocketGateway({ cors: true })
 export class TournamentGateway {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
 
   constructor(private readonly tournamentService: TournamentService) {}
+
+  afterInit(server: Server) {
+    this.server = server;
+  }
 
   async emitTournamentUpdate(tournamentId: string) {
     const tournament = await this.tournamentService.findOne(tournamentId);

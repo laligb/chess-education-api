@@ -11,25 +11,25 @@ export class User {
     unique: true,
     default: () => new mongoose.Types.ObjectId().toString(),
   })
-  customId: string;
+  customId?: string;
 
   @Prop({ required: true })
-  name: string;
+  name?: string;
 
   @Prop({ required: true, enum: ['admin', 'professor', 'student', 'user'] })
-  role: string;
+  role!: string;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }],
     default: [],
   })
-  groups: string[];
+  groups!: string[];
 
   @Prop({ required: true, unique: true })
-  email: string;
+  email!: string;
 
   @Prop({ required: true })
-  password: string;
+  password!: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

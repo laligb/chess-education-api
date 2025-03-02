@@ -25,21 +25,24 @@ export class GameService {
     return this.gameModel.findById(id).exec();
   }
 
-  async createGame(playerOne: string, playerTwo: string): Promise<Game> {
-    const gameId = `${playerOne}-${playerTwo}`;
+  async createGame(playerOneId: string, playerTwoId: string): Promise<Game> {
+    console.log(`📌 Creating game for ${playerOneId} vs ${playerTwoId}`);
 
-    let game = await this.gameModel.findOne({ _id: gameId });
-    if (!game) {
-      game = new this.gameModel({
-        _id: gameId,
-        playerOne,
-        playerTwo,
-        pgn: '',
-        status: 'onGoing',
-      });
-      await game.save();
+    const game = new this.gameModel({
+      playerOne: playerOneId,
+      playerTwo: playerTwoId,
+      pgn: '',
+      status: 'in-progress',
+    });
+
+    try {
+      const savedGame = await game.save();
+      console.log(`✅ Game saved with ID: ${savedGame.id}`);
+      return savedGame.toObject() as Game;
+    } catch (error) {
+      console.error('❌ Game save failed:', error);
+      throw new Error('Game creation failed');
     }
-    return game;
   }
 
   async addMove(gameId: string, move: string): Promise<Game | null> {

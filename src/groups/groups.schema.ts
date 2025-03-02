@@ -6,21 +6,21 @@ import { User } from 'src/user/user.schema';
 @Schema()
 export class Group extends Document {
   @Prop({ required: true })
-  name: string;
+  name?: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
-  professor: User;
+  professor?: User;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     default: [],
   })
-  students: User[];
+  students?: User[];
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
     default: [],
   })
-  games: Game[];
+  games?: Game[];
 }
 export const GroupSchema = SchemaFactory.createForClass(Group);

@@ -2,11 +2,11 @@ import { IsNumber, IsString } from 'class-validator';
 
 export class LocationDto {
   @IsString()
-  name: string;
+  name!: string;
 
   @IsNumber()
-  latitude: number;
+  latitude!: number;
 
   @IsNumber()
-  longitude: number;
+  longitude!: number;
 }

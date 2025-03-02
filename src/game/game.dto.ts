@@ -2,16 +2,16 @@ import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateGameDto {
   @IsString()
-  pgn: string;
+  pgn!: string;
 
   @IsMongoId()
   @IsNotEmpty()
-  playerOne: string;
+  playerOne!: string;
 
   @IsMongoId()
   @IsNotEmpty()
-  playerTwo: string;
+  playerTwo!: string;
 
   @IsString()
-  result: string;
+  result!: string;
 }

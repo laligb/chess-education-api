@@ -19,7 +19,7 @@ export class Chat
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer()
-  server: Server;
+  server?: Server;
 
   afterInit(server: Server) {
     console.log('✅ WebSocket Server Initialized');
@@ -48,6 +48,6 @@ export class Chat
       status: 'Message received by server',
     });
 
-    this.server.emit('receiveMessage', payload);
+    this.server?.emit('receiveMessage', payload);
   }
 }
