@@ -25,9 +25,8 @@ export class GameService {
     return this.gameModel.findById(id).exec();
   }
 
-  // ✅ New method: Create a game when an invite is accepted
   async createGame(playerOne: string, playerTwo: string): Promise<Game> {
-    const gameId = `${playerOne}-${playerTwo}`; // Unique game ID
+    const gameId = `${playerOne}-${playerTwo}`;
 
     let game = await this.gameModel.findOne({ _id: gameId });
     if (!game) {
@@ -43,7 +42,6 @@ export class GameService {
     return game;
   }
 
-  // ✅ New method: Append move to PGN
   async addMove(gameId: string, move: string): Promise<Game | null> {
     const game = await this.gameModel.findById(gameId);
     if (!game) {

@@ -9,7 +9,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { GameService } from '../game/game.service'; // ✅ Use GameService instead of injecting GameModel
+import { GameService } from '../game/game.service';
 
 interface InvitePayload {
   from: string;
@@ -21,7 +21,9 @@ interface MovePayload {
   move: string;
 }
 
-@WebSocketGateway({ cors: { origin: 'http://localhost:3001' } })
+@WebSocketGateway({
+  cors: { origin: ['http://localhost:3001', 'https://chessnext.vercel.app'] },
+})
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -58,7 +60,7 @@ export class GameGateway
   ) {
     console.log(`🎮 Game starting between ${payload.from} and ${payload.to}`);
 
-    const game = await this.gameService.createGame(payload.from, payload.to); // ✅ Use GameService
+    const game = await this.gameService.createGame(payload.from, payload.to);
 
     client.join(game.id);
     this.server
