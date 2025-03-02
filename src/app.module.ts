@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GroupsModule } from './groups/groups.module';
 import { GameModule } from './game/game.module';
 import { TournamentModule } from './tournament/tournament.module';
+import { Chat } from './gateways/chat.gateway';
 
 const mongoUri =
   process.env.MONGO_URI || 'mongodb://localhost:27017/nestjs-test';
@@ -17,8 +18,9 @@ const mongoUri =
     GroupsModule,
     GameModule,
     TournamentModule,
+    Chat,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, Chat],
 })
 export class AppModule {}

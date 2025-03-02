@@ -25,6 +25,36 @@ export class GameService {
     return this.gameModel.findById(id).exec();
   }
 
+  // ✅ New method: Create a game when an invite is accepted
+  async createGame(playerOne: string, playerTwo: string): Promise<Game> {
+    const gameId = `${playerOne}-${playerTwo}`; // Unique game ID
+
+    let game = await this.gameModel.findOne({ _id: gameId });
+    if (!game) {
+      game = new this.gameModel({
+        _id: gameId,
+        playerOne,
+        playerTwo,
+        pgn: '',
+        status: 'onGoing',
+      });
+      await game.save();
+    }
+    return game;
+  }
+
+  // ✅ New method: Append move to PGN
+  async addMove(gameId: string, move: string): Promise<Game | null> {
+    const game = await this.gameModel.findById(gameId);
+    if (!game) {
+      throw new BadRequestException('Game not found');
+    }
+
+    game.pgn += ` ${move}`;
+    await game.save();
+    return game;
+  }
+
   private isValidPGN(pgn: string): boolean {
     return pgn.match(/\d+\.\s?[a-h1-8NBRQKx+-]+/g) !== null;
   }
