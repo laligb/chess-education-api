@@ -4,7 +4,7 @@ import { DecodedIdToken } from 'firebase-admin/auth';
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.applicationDefault(), // ✅ Ensure this is configured
+    credential: admin.credential.applicationDefault(),
   });
 }
 
@@ -12,10 +12,11 @@ if (!admin.apps.length) {
 export class AuthService {
   async verifyFirebaseToken(token: string): Promise<DecodedIdToken | null> {
     try {
-      return await admin.auth().verifyIdToken(token);
-    } catch (error: unknown) {
-      console.error('Firebase Token Verification Error:', error);
-      return null; // ✅ Safe return if token verification fails
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      return decodedToken;
+    } catch (error) {
+      console.error('❌ Firebase Token Verification Error:', error);
+      return null;
     }
   }
 }

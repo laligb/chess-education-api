@@ -10,7 +10,7 @@ export class CreateUserDto {
 
   @IsString()
   @MinLength(6)
-  password!: string;
+  password?: string;
 
   @IsString()
   role!: 'professor' | 'student' | 'user' | 'admin';

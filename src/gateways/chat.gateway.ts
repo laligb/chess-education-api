@@ -22,6 +22,7 @@ export class Chat
   server?: Server;
 
   afterInit(server: Server) {
+    this.server = server;
     console.log('✅ WebSocket Server Initialized');
   }
 

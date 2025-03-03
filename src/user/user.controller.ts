@@ -2,14 +2,12 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Param,
   Headers,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.schema';
-import { CreateUserDto } from './user.dto';
 import { AuthService } from './auth.service';
 
 @Controller('users')
@@ -20,25 +18,42 @@ export class UserController {
   ) {}
 
   @Post('login')
-  async loginUser(
-    @Body() userDto: CreateUserDto,
-    @Headers('Authorization') authHeader: string,
-  ) {
-    const token = authHeader?.split(' ')[1]; // ✅ Extract Firebase token
-    const verifiedUser = await this.authService.verifyFirebaseToken(token);
-
-    if (!verifiedUser) {
-      throw new UnauthorizedException('Invalid Firebase token');
+  async loginUser(@Headers('Authorization') authHeader?: string) {
+    if (!authHeader) {
+      throw new UnauthorizedException('Missing Authorization header');
     }
 
-    // ✅ Check if the user already exists in MongoDB
-    let user = await this.usersService.findByEmail(userDto.email);
-
-    if (!user) {
-      user = await this.usersService.create(userDto); // ✅ If new user, save in MongoDB
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      throw new UnauthorizedException('Missing token');
     }
 
-    return user;
+    try {
+      const verifiedUser = await this.authService.verifyFirebaseToken(token);
+
+      if (!verifiedUser || !verifiedUser.email) {
+        throw new UnauthorizedException('Invalid Firebase token');
+      }
+
+      const userName: string = (verifiedUser.name as string) ?? 'No Name';
+
+      const userEmail: string = verifiedUser.email ?? 'No Email';
+
+      let user = await this.usersService.findByEmail(userEmail);
+      if (!user) {
+        user = await this.usersService.create({
+          name: userName,
+          email: userEmail,
+          role: 'user',
+          password: 'placeholder',
+        });
+      }
+
+      return { message: 'Login successful', user };
+    } catch (error) {
+      console.error('🔥 Firebase Login Error:', error);
+      throw new UnauthorizedException('Authentication failed');
+    }
   }
 
   @Get()
