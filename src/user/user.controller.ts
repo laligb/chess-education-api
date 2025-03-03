@@ -27,7 +27,6 @@ export class UserController {
     }
 
     const token = authHeader.split(' ')[1];
-    console.log('🔑 Received token:', token);
 
     if (!token) {
       console.error('❌ Missing token');
@@ -81,7 +80,6 @@ export class UserController {
     }
 
     const token = authHeader.split(' ')[1];
-    console.log('🔑 Received token:', token);
 
     if (!token) {
       console.error('❌ Missing token');
