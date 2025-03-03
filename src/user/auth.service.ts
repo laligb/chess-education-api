@@ -3,6 +3,12 @@ import * as admin from 'firebase-admin';
 import { DecodedIdToken } from 'firebase-admin/auth';
 
 if (!admin.apps.length) {
+  console.log('🔥 Firebase Credentials:', {
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY ? '✅ Exists' : '❌ Missing',
+  });
+
   admin.initializeApp({
     credential: admin.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
