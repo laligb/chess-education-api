@@ -1,4 +1,4 @@
-# Chess Education API
+# Chess API
 
 ## Overview
 
