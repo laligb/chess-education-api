@@ -24,4 +24,35 @@ export class UserService {
   async findByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).exec();
   }
+
+  async addTournamentToPlayer(
+    userId: string,
+    tournamentId: string,
+  ): Promise<User> {
+    const player = await this.userModel.findById(userId);
+    if (!player) {
+      throw new Error('Player not found');
+    }
+
+    player.tournaments.push(tournamentId);
+    return player.save();
+  }
+
+  async withdrawFromTournament(
+    userId: string,
+    tournamentId: string,
+  ): Promise<User> {
+    const player = await this.userModel.findById(userId);
+    if (!player) {
+      throw new Error('Player not found');
+    }
+
+    const tournamentIndex = player.tournaments.indexOf(tournamentId);
+    if (tournamentIndex === -1) {
+      throw new Error('Player not registered in this tournament');
+    }
+
+    player.tournaments.splice(tournamentIndex, 1);
+    return player.save();
+  }
 }

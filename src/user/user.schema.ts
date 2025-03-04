@@ -30,6 +30,39 @@ export class User {
 
   @Prop({ required: true })
   password!: string;
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tournament' }],
+    default: [],
+  })
+  tournaments!: string[];
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
+  })
+  friends!: string[];
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
+  })
+  followers!: string[];
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
+  })
+  following!: string[];
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
+    default: [],
+  })
+  games!: string[];
+
+  @Prop({ type: String, default: '' })
+  photoUrl?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

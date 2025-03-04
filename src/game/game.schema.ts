@@ -19,7 +19,7 @@ export class Game extends Document {
 
   @Prop({
     type: String,
-    enum: ['1-0', '1/2-1/2', '0-1', '0-0', '+-', '-+', '--', ''],
+    enum: ['1-0', '1/2-1/2', '0-1', '0-0', '+-', '-+', '--', '', '*'],
     default: '',
   })
   result?: string;

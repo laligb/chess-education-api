@@ -56,4 +56,20 @@ export class TournamentController {
   async delete(@Param('id') id: string): Promise<{ message: string }> {
     return this.tournamentService.delete(id);
   }
+
+  @Post(':id/join')
+  async joinTournament(
+    @Param('id') tournamentId: string,
+    @Body('userId') userId: string,
+  ): Promise<Tournament> {
+    return this.tournamentService.joinTournament(tournamentId, userId);
+  }
+
+  @Delete(':id/withdraw')
+  async withdrawTournament(
+    @Param('id') tournamentId: string,
+    @Body('userId') userId: string,
+  ): Promise<Tournament> {
+    return this.tournamentService.withdrawTournament(tournamentId, userId);
+  }
 }
