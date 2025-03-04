@@ -6,6 +6,7 @@ import {
   Headers,
   UnauthorizedException,
   Body,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.schema';
@@ -123,5 +124,10 @@ export class UserController {
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User | null> {
     return this.usersService.findOne(id);
+  }
+
+  @Delete(':id')
+  async deleteUser(@Param('id') userId: string) {
+    return await this.usersService.deleteUser(userId);
   }
 }
