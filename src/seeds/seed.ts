@@ -5,7 +5,8 @@ import { User, UserSchema } from 'src/user/user.schema';
 import { Tournament, TournamentSchema } from 'src/tournament/tournament.schema';
 import { Game, GameSchema } from 'src/game/game.schema';
 import { Group, GroupSchema } from 'src/groups/groups.schema';
-import { realPgnGames } from './games'; // Import the games from the file
+import { realPgnGames } from './games';
+import { AuthService } from 'src/user/auth.service';
 
 /**
  * Instruction: To seed from terminal use this command:
@@ -15,6 +16,8 @@ import { realPgnGames } from './games'; // Import the games from the file
 const DB_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/nestjs-test';
 
 async function seedDatabase() {
+  const authService = new AuthService();
+
   console.log('📡 Connecting to database...');
   await mongoose.connect(DB_URI);
 
@@ -34,6 +37,19 @@ async function seedDatabase() {
     groupModel.deleteMany({}),
   ]);
 
+  const users1 = await userModel.find({});
+
+  for (const user of users1) {
+    try {
+      await authService.deleteFirebaseUser(user._id.toString()); // Using _id as UID
+    } catch (error) {
+      console.error(
+        `❌ Failed to delete Firebase user for ${user.email}:`,
+        error,
+      );
+    }
+  }
+
   console.log('👤 Creating users...');
   const users: HydratedDocument<User>[] = [];
   const professors: HydratedDocument<User>[] = [];
@@ -41,20 +57,30 @@ async function seedDatabase() {
 
   for (let i = 0; i < 100; i++) {
     const role = i < 20 ? 'professor' : i < 50 ? 'student' : 'user';
-    const user = await userModel.create({
-      name: faker.person.fullName(),
-      email: faker.internet.email().toLowerCase(),
-      password: faker.internet.password(),
-      role,
-      groups: [],
-      tournaments: [],
-      games: [],
-      photoUrl: faker.image.avatar(),
-    });
+    const email = faker.internet.email().toLowerCase();
+    const password = faker.internet.password();
 
-    users.push(user);
-    if (role === 'professor') professors.push(user);
-    else if (role === 'student') students.push(user);
+    const firebaseUser = await authService.createFirebaseUser(email, password);
+    if (firebaseUser) {
+      const user = await userModel.create({
+        name: faker.person.fullName(),
+        email: email,
+        password: password,
+        role,
+        groups: [],
+        tournaments: [],
+        games: [],
+        photoUrl: faker.image.avatar(),
+      });
+
+      users.push(user);
+      if (role === 'professor') professors.push(user);
+      else if (role === 'student') students.push(user);
+    }
+
+    if (i % 10 === 0) {
+      console.log(`Created ${i + 1} users...`);
+    }
   }
 
   console.log('🏆 Creating tournaments...');
@@ -104,7 +130,6 @@ async function seedDatabase() {
       );
       const tournament = faker.helpers.arrayElement(tournaments);
 
-      // Explicitly type the tournament._id as mongoose.Types.ObjectId
       const tournamentId =
         tournament._id instanceof mongoose.Types.ObjectId
           ? tournament._id.toString()
@@ -116,11 +141,9 @@ async function seedDatabase() {
           ? faker.helpers.arrayElement(['1-0', '0-1', '1/2-1/2'])
           : '*';
 
-      // Ensure both players have names
       const whitePlayer = user.name || 'Player1';
       const blackPlayer = opponent.name || 'Player2';
 
-      // Replace placeholders with actual player names and result
       const pgnWithNames = faker.helpers
         .arrayElement(realPgnGames)
         .replace('{WHITE_PLAYER}', whitePlayer)

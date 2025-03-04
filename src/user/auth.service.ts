@@ -32,4 +32,30 @@ export class AuthService {
       return null;
     }
   }
+
+  async createFirebaseUser(
+    email: string,
+    password: string,
+  ): Promise<admin.auth.UserRecord | null> {
+    try {
+      const userRecord = await admin.auth().createUser({
+        email: email,
+        password: password,
+      });
+      console.log('Successfully created Firebase user:', userRecord.uid);
+      return userRecord;
+    } catch (error) {
+      console.error('❌ Firebase User Creation Error:', error);
+      return null;
+    }
+  }
+
+  async deleteFirebaseUser(uid: string): Promise<void> {
+    try {
+      await admin.auth().deleteUser(uid);
+      console.log(`✅ Deleted Firebase user: ${uid}`);
+    } catch (error) {
+      console.error(`❌ Failed to delete Firebase user: ${uid}`, error);
+    }
+  }
 }
