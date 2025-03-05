@@ -172,14 +172,32 @@ async function createGroupsAndAssignStudents() {
   const userModel = mongoose.model<User>('User', UserSchema);
   const groupModel = mongoose.model<Group>('Group', GroupSchema);
 
+  // Step 1: Delete all existing groups
+  console.log('🗑️ Deleting all existing groups...');
+  await groupModel.deleteMany({}); // Deletes all groups
+
+  // Step 2: Clear `groups` field for all students
+  console.log("🗑️ Clearing students' group associations...");
+  await userModel.updateMany({ role: 'student' }, { $set: { groups: [] } }); // Reset students' group fields to empty array
+
+  // Step 3: Fetch professors and students
   const professors = await userModel.find({ role: 'professor' });
   const students = await userModel.find({ role: 'student' });
 
-  console.log('👤 Merging students into groups...');
+  console.log('👤 Creating new groups...');
 
+  // Step 4: Recreate groups and assign students
   for (const professor of professors) {
+    console.log(
+      `Professor: ${professor.name}, Total Students: ${students.length}`,
+    );
+
     const availableStudents = students.filter(
-      (student) => student.groups.length === 0,
+      (student) => student.groups.length === 0, // Ensure students have no groups assigned
+    );
+
+    console.log(
+      `Professor: ${professor.name}, Available Students: ${availableStudents.length}`,
     );
 
     if (availableStudents.length > 0) {
@@ -188,20 +206,48 @@ async function createGroupsAndAssignStudents() {
         max: 10,
       });
 
+      console.log(
+        `Assigning ${studentsForGroup.length} students to ${professor.name}`,
+      );
+
+      // Ensure studentsForGroup is populated
+      if (studentsForGroup.length === 0) {
+        console.log(`No students found for ${professor.name}'s group.`);
+        continue; // Skip creating the group if no students are available
+      }
+
+      // Create the group
       const group = await groupModel.create({
         name: `Group of ${professor.name}`,
-        professor: professor._id,
-        students: studentsForGroup.map((student) => student._id),
+        professor: professor._id, // Assign the professor to the group
+        students: studentsForGroup.map((student) => student._id), // Assign students to the group
         games: [],
       });
 
-      await Promise.all(
-        studentsForGroup.map((student) =>
-          userModel.updateOne(
-            { _id: student._id },
-            { $push: { groups: group._id } },
-          ),
+      // Add the group to the professor's `groups` field
+      const professorUpdateResult = await userModel.updateOne(
+        { _id: professor._id },
+        { $push: { groups: group._id } },
+      );
+
+      console.log(
+        `Professor ${professor.name} updated with new group:`,
+        professorUpdateResult,
+      );
+
+      // Add the group to each student's `groups` field
+      const studentUpdatePromises = studentsForGroup.map((student) =>
+        userModel.updateOne(
+          { _id: student._id },
+          { $push: { groups: group._id } },
         ),
+      );
+
+      const studentUpdateResults = await Promise.all(studentUpdatePromises);
+
+      console.log(
+        `Successfully assigned group to students:`,
+        studentUpdateResults,
       );
 
       console.log(
@@ -213,9 +259,10 @@ async function createGroupsAndAssignStudents() {
   console.log('✅ Group creation complete! Closing connection.');
   await mongoose.connection.close();
 }
-seedDatabase().catch((err) => {
-  console.error('❌ Seeding failed:', err);
-});
+
+// seedDatabase().catch((err) => {
+//   console.error('❌ Seeding failed:', err);
+// });
 
 createGroupsAndAssignStudents().catch((err) => {
   console.error('❌ Error creating groups:', err);
