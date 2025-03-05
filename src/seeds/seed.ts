@@ -165,6 +165,58 @@ async function seedDatabase() {
   await mongoose.connection.close();
 }
 
+async function createGroupsAndAssignStudents() {
+  console.log('📡 Connecting to database...');
+  await mongoose.connect(DB_URI);
+
+  const userModel = mongoose.model<User>('User', UserSchema);
+  const groupModel = mongoose.model<Group>('Group', GroupSchema);
+
+  const professors = await userModel.find({ role: 'professor' });
+  const students = await userModel.find({ role: 'student' });
+
+  console.log('👤 Merging students into groups...');
+
+  for (const professor of professors) {
+    const availableStudents = students.filter(
+      (student) => student.groups.length === 0,
+    );
+
+    if (availableStudents.length > 0) {
+      const studentsForGroup = faker.helpers.arrayElements(availableStudents, {
+        min: 5,
+        max: 10,
+      });
+
+      const group = await groupModel.create({
+        name: `Group of ${professor.name}`,
+        professor: professor._id,
+        students: studentsForGroup.map((student) => student._id),
+        games: [],
+      });
+
+      await Promise.all(
+        studentsForGroup.map((student) =>
+          userModel.updateOne(
+            { _id: student._id },
+            { $push: { groups: group._id } },
+          ),
+        ),
+      );
+
+      console.log(
+        `✅ Assigned ${studentsForGroup.length} students to ${professor.name}'s group.`,
+      );
+    }
+  }
+
+  console.log('✅ Group creation complete! Closing connection.');
+  await mongoose.connection.close();
+}
 seedDatabase().catch((err) => {
   console.error('❌ Seeding failed:', err);
+});
+
+createGroupsAndAssignStudents().catch((err) => {
+  console.error('❌ Error creating groups:', err);
 });

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Group } from './groups.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -20,4 +20,13 @@ export class GroupsService {
   async findOne(id: string): Promise<Group | null> {
     return this.groupModel.findById(id).exec();
   }
+
+  // async joinGroup(groupId: string, professorId: string): Promise<Group> {
+  //   const group = await this.groupModel.findById(groupId);
+  //   if (!group) {
+  //     throw new NotFoundException('Group not found');
+  //   }
+
+  //   if (!group.professors){}
+  // }
 }
