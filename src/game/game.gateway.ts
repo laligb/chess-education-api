@@ -18,6 +18,7 @@ interface InvitePayload {
 
 @WebSocketGateway({
   cors: { origin: ['http://localhost:3001', 'https://chessnext.vercel.app'] },
+  namespace: '/game',
 })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect

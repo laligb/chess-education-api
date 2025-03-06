@@ -1,30 +1,25 @@
-import {
-  // MessageBody,
-  // SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
-import { Server } from 'socket.io';
-import { TournamentService } from './tournament.service';
+// import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+// import { Server } from 'socket.io';
+// import { TournamentService } from './tournament.service';
 
-@WebSocketGateway({ cors: true })
-export class TournamentGateway {
-  @WebSocketServer()
-  server!: Server;
+// @WebSocketGateway({ cors: true })
+// export class TournamentGateway {
+//   @WebSocketServer()
+//   server!: Server;
 
-  constructor(private readonly tournamentService: TournamentService) {}
+//   constructor(private readonly tournamentService: TournamentService) {}
 
-  afterInit(server: Server) {
-    this.server = server;
-  }
+//   afterInit(server: Server) {
+//     this.server = server;
+//   }
 
-  async emitTournamentUpdate(tournamentId: string) {
-    const tournament = await this.tournamentService.findOne(tournamentId);
-    this.server.emit(`tournament-update-${tournamentId}`, tournament);
-  }
+//   async emitTournamentUpdate(tournamentId: string) {
+//     const tournament = await this.tournamentService.findOne(tournamentId);
+//     this.server.emit(`tournament-update-${tournamentId}`, tournament);
+//   }
 
-  // @SubscribeMessage('start-tournament')
-  // async handleStartTournament(@MessageBody() data: {tournamentId: string}) {
-  //   await this.tournamentService.
-  // };
-}
+//   // @SubscribeMessage('start-tournament')
+//   // async handleStartTournament(@MessageBody() data: {tournamentId: string}) {
+//   //   await this.tournamentService.
+//   // };
+// }
