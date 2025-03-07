@@ -60,7 +60,8 @@ Chess Education API is a backend service designed to manage chess tournaments, g
 
 ## Endpoints
 
-- `POST /auth/login`: Authenticates a user (professor or student) and returns a JWT token.
+- `POST /login`: Authenticates a user.
+- `POST /signup`: Sign up a user
 - `GET /tournaments`: Fetches all tournaments.
 - `GET /games`: Fetches all games.
 - `GET /games/:id`: a games.
