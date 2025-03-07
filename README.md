@@ -38,9 +38,9 @@ Chess Education API is a backend service designed to manage chess tournaments, g
 
 3. Set up your local MongoDB instance or use a remote MongoDB service. If using a local instance, ensure MongoDB is running on `localhost:27017`, run MongoDB with the next command:
 
-```bash
-     mongod
-```
+   ```bash
+      mongod
+   ```
 
 4. Create a `.env` or `.env.local` file in the root directory and add the following:
 
