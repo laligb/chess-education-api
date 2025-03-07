@@ -24,13 +24,11 @@ Chess Education API is a backend service designed to manage chess tournaments, g
 
 1. Clone the repository:
 
-   ````bash
+   ```bash
    git clone https://github.com/laligb/chess-education-api.git
    cd chess-education-api
 
-   ```bash
-     mongod
-   ````
+   ```
 
 2. Install dependencies:
 
@@ -38,7 +36,11 @@ Chess Education API is a backend service designed to manage chess tournaments, g
    npm install
    ```
 
-3. Set up your local MongoDB instance or use a remote MongoDB service. If using a local instance, ensure MongoDB is running on `localhost:27017`.
+3. Set up your local MongoDB instance or use a remote MongoDB service. If using a local instance, ensure MongoDB is running on `localhost:27017`, run MongoDB with the next command:
+
+```bash
+     mongod
+```
 
 4. Create a `.env` or `.env.local` file in the root directory and add the following:
 
