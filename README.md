@@ -40,11 +40,12 @@ Chess Education API is a backend service designed to manage chess tournaments, g
 
 3. Set up your local MongoDB instance or use a remote MongoDB service. If using a local instance, ensure MongoDB is running on `localhost:27017`.
 
-4. Create a `.env` file in the root directory and add the following:
+4. Create a `.env` or `.env.local` file in the root directory and add the following:
 
    ```env
-   DATABASE_URL=mongodb://localhost:27017/chess-education
-   JWT_SECRET=your-jwt-secret-key
+   FIREBASE_PROJECT_ID="project id"
+   FIREBASE_CLIENT_EMAIL="firebase email"
+   FIREBASE_PRIVATE_KEY="firebase private key"
    ```
 
 5. Run the application:
@@ -69,3 +70,11 @@ Chess Education API is a backend service designed to manage chess tournaments, g
 - `PUT /users/:id`: Updates a users.
 
 For full API documentation, refer to the API endpoints in the code.
+
+## Mock database
+
+To create your mock database use the next command:
+
+```bash
+ npx ts-node -r tsconfig-paths/register src/seeds/seed.ts
+```
