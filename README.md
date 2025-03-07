@@ -1,4 +1,4 @@
-# Chess API
+# Chess Hub API
 
 ## Overview
 
@@ -29,7 +29,7 @@ Chess Education API is a backend service designed to manage chess tournaments, g
    cd chess-education-api
 
    ```bash
-     monogd
+     mongod
    ````
 
 2. Install dependencies:
@@ -63,6 +63,8 @@ Chess Education API is a backend service designed to manage chess tournaments, g
 - `GET /games/:id`: a games.
 - `GET /users/`: Fetches all users.
 - `GET /users/:id`: Fetches a user.
+- `GET /groups/`: Fetches all groups.
+- `GET /groups/:id`: Fetches a groups.
 - `POST /users`: Creates a new user.
 - `PUT /users/:id`: Updates a users.
 

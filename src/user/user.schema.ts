@@ -1,10 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
-// export type UserDocument = HydratedDocument<User> & {
-//   validatePassword(password: string): Promise<boolean>;
-// };
-
 @Schema()
 export class User {
   @Prop({
