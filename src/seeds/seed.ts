@@ -252,10 +252,19 @@ async function createGroupsAndAssignStudents() {
   await mongoose.connection.close();
 }
 
-seedDatabase().catch((err) => {
-  console.error('❌ Seeding failed:', err);
-});
+// seedDatabase().catch((err) => {
+//   console.error('❌ Seeding failed:', err);
+// });
 
-createGroupsAndAssignStudents().catch((err) => {
-  console.error('❌ Error creating groups:', err);
+// createGroupsAndAssignStudents().catch((err) => {
+//   console.error('❌ Error creating groups:', err);
+// });
+
+async function runSeedAndGroups() {
+  await seedDatabase();
+  await createGroupsAndAssignStudents();
+}
+
+runSeedAndGroups().catch((err) => {
+  console.error('❌ Seeding failed:', err);
 });
