@@ -126,6 +126,38 @@ export class UserController {
     return this.usersService.findOne(id);
   }
 
+  @Get('me')
+  async getCurrentUser(@Headers('Authorization') authHeader?: string) {
+    if (!authHeader) {
+      throw new UnauthorizedException('Missing Authorization header');
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    if (!token) {
+      throw new UnauthorizedException('Missing token');
+    }
+
+    try {
+      const verifiedUser = await this.authService.verifyFirebaseToken(token);
+
+      if (!verifiedUser || !verifiedUser.email) {
+        throw new UnauthorizedException('Invalid Firebase token');
+      }
+
+      const user = await this.usersService.findByEmail(verifiedUser.email);
+
+      if (!user) {
+        throw new UnauthorizedException('User not found in database');
+      }
+
+      return user;
+    } catch (error) {
+      console.error('🔥 Error fetching current user:', error);
+      throw new UnauthorizedException('Failed to fetch user');
+    }
+  }
+
   @Delete(':id')
   async deleteUser(@Param('id') userId: string) {
     return await this.usersService.deleteUser(userId);
