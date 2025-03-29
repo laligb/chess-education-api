@@ -121,11 +121,6 @@ export class UserController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<User | null> {
-    return this.usersService.findOne(id);
-  }
-
   @Get('me')
   async getCurrentUser(@Headers('Authorization') authHeader?: string) {
     if (!authHeader) {
@@ -150,12 +145,18 @@ export class UserController {
       if (!user) {
         throw new UnauthorizedException('User not found in database');
       }
+      console.log('👤 Found user in DB:', user);
 
       return user;
     } catch (error) {
       console.error('🔥 Error fetching current user:', error);
       throw new UnauthorizedException('Failed to fetch user');
     }
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<User | null> {
+    return this.usersService.findOne(id);
   }
 
   @Delete(':id')
