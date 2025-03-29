@@ -11,6 +11,7 @@ async function bootstrap() {
     'http://localhost:3001',
     'https://lbchess.com',
     'https://api.lbchess.com',
+    'https://www.lbchess.com',
   ];
 
   app.enableCors({
